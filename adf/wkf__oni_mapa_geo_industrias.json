@@ -1,0 +1,71 @@
+{
+	"name": "wkf__oni_mapa_geo_industrias",
+	"properties": {
+		"description": "carga das bases manuais, disparado sob demanda\n",
+		"activities": [
+			{
+				"name": "org_raw_municipio_rfb_ibge",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "org_raw_municipio_rfb_ibge",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"env": {
+							"value": "@pipeline().parameters.env",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "raw_trs_municipio_rfb_ibge",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "org_raw_municipio_rfb_ibge",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "raw_trs_municipio_rfb_ibge",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"env": {
+							"value": "@pipeline().parameters.env",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"env": {
+				"type": "object",
+				"defaultValue": {
+					"env": "dev"
+				}
+			}
+		},
+		"folder": {
+			"name": "workflow/oni/mapa_georreferenciamento_industrias"
+		},
+		"annotations": []
+	}
+}
